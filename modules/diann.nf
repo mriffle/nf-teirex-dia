@@ -73,6 +73,7 @@ process DIANN_SEARCH_LIB_FREE {
         diann ${ms_file_args} \
             --threads ${task.cpus} \
             --fasta "${fasta_file}" \
+            --fasta-search \
             ${diann_params} \
             > >(tee "diann.stdout") 2> >(tee "diann.stderr" >&2)
         mv -v lib.tsv.speclib report.tsv.speclib
