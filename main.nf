@@ -201,6 +201,10 @@ workflow {
             diann_search.out.quant_files.flatten()
         ).concat(
             diann_search.out.blib
+        ).concat(
+            diann_search.out.stdout
+        ).concat(
+            diann_search.out.stderr
         )
 
     } else {

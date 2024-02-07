@@ -16,6 +16,8 @@ workflow diann_search {
         quant_files
         speclib
         precursor_tsv
+        stdout
+        stderr
 
     main:
 
@@ -42,4 +44,6 @@ workflow diann_search {
         quant_files = diann_results.quant_files
         speclib = diann_results.speclib
         precursor_tsv = diann_results.precursor_tsv
+        stdout = diann_results.stdout
+        stderr = diann_results.stderr
 }
