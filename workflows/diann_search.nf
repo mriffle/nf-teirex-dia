@@ -35,11 +35,11 @@ workflow diann_search {
             )
         }
 
-        BLIB_BUILD_LIBRARY(diann_results.out.speclib,
-                           diann_results.out.precursor_tsv)
+        BLIB_BUILD_LIBRARY(diann_results.speclib,
+                           diann_results.precursor_tsv)
 
         blib = BLIB_BUILD_LIBRARY.out.blib
-        quant_files = diann_results.out.quant_files
-        speclib = diann_results.out.speclib
-        precursor_tsv = diann_results.out.precursor_tsv
+        quant_files = diann_results.quant_files
+        speclib = diann_results.speclib
+        precursor_tsv = diann_results.precursor_tsv
 }
