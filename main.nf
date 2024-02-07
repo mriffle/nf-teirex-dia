@@ -81,6 +81,10 @@ workflow {
 
     if(params.search_engine.toLowerCase() == 'encyclopedia') {
 
+        if(!params.spectral_library) {
+            error "The parameter \'spectral_library\' is required when using EncyclopeDIA."
+        }
+
         all_diann_file_ch = Channel.empty()  // will be no diann
 
         // convert blib to dlib if necessary
