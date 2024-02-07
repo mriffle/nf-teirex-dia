@@ -74,6 +74,7 @@ process DIANN_SEARCH_LIB_FREE {
             --threads ${task.cpus} \
             --fasta "${fasta_file}" \
             --fasta-search \
+            --predictor \
             ${diann_params} \
             > >(tee "diann.stdout") 2> >(tee "diann.stderr" >&2)
         mv -v lib.tsv.speclib report.tsv.speclib
