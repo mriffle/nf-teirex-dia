@@ -216,28 +216,37 @@ workflow {
         error "'${params.search_engine}' is an invalid argument for params.search_engine!"
     }
 
-    // create Skyline document
-    if(skyline_template_zipfile != null) {
-        skyline_import(
-            skyline_template_zipfile,
-            fasta,
-            final_elib,
-            wide_mzml_ch
-        )
-    }
+    if(!params.skip_skyline) {
 
-    final_skyline_file = skyline_import.out.skyline_results
+        // create Skyline document
+        if(skyline_template_zipfile != null) {
+            skyline_import(
+                skyline_template_zipfile,
+                fasta,
+                final_elib,
+                wide_mzml_ch
+            )
+        }
 
-    // run reports if requested
-    skyline_reports_ch = null;
-    if(params.skyline_skyr_file) {
-        skyline_reports(
-            final_skyline_file,
-            skyr_file_ch
-        )
-        skyline_reports_ch = skyline_reports.out.skyline_report_files.flatten()
+        final_skyline_file = skyline_import.out.skyline_results
+
+        // run reports if requested
+        skyline_reports_ch = null;
+        if(params.skyline_skyr_file) {
+            skyline_reports(
+                final_skyline_file,
+                skyr_file_ch
+            )
+            skyline_reports_ch = skyline_reports.out.skyline_report_files.flatten()
+        } else {
+            skyline_reports_ch = Channel.empty()
+        }
     } else {
+
+        // skip skyline
         skyline_reports_ch = Channel.empty()
+        skyr_file_ch = Channel.empty()
+        final_skyline_file = Channel.empty()
     }
 
     // upload results to Panorama
