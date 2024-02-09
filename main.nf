@@ -18,6 +18,7 @@ include { panorama_upload_mzmls } from "./workflows/panorama_upload"
 include { SAVE_RUN_DETAILS } from "./modules/save_run_details"
 include { ENCYCLOPEDIA_BLIB_TO_DLIB } from "./modules/encyclopedia"
 include { ENCYCLOPEDIA_DLIB_TO_TSV } from "./modules/encyclopedia"
+include { BLIB_BUILD_LIBRARY } from "./modules/diann"
 
 //
 // The main workflow
@@ -197,7 +198,15 @@ workflow {
             spectral_library_to_use
         )
 
-        final_elib = diann_search.out.blib
+        // create compatible spectral library for Skyline, if needed
+        if(!params.skip_skyline) {
+            BLIB_BUILD_LIBRARY(diann_search.out.speclib,
+                               diann_search.out.precursor_tsv)
+
+            final_elib = BLIB_BUILD_LIBRARY.out.blib
+        } else {
+            final_elib = Channel.empty()
+        }
 
         // all files to upload to panoramaweb (if requested)
         all_diann_file_ch = diann_search.out.speclib.concat(
@@ -205,7 +214,7 @@ workflow {
         ).concat(
             diann_search.out.quant_files.flatten()
         ).concat(
-            diann_search.out.blib
+            final_elib
         ).concat(
             diann_search.out.stdout
         ).concat(
