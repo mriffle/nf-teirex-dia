@@ -31,9 +31,18 @@ workflow {
 
     config_file = file(workflow.configFiles[1]) // the config file used
 
-    // check for required params
+    // check for required params or incompatible params
     if(params.panorama.upload && !params.panorama.upload_url) {
         error "Panorama upload requested, but missing param: \'panorama.upload_url\'."
+    }
+
+    if(params.panorama.import_skyline) {
+        if(!params.panorama.upload) {
+            error "Import of Skyline document in Panorama requested, but \'panorama.upload\' is not set to true."
+        }
+        if(params.skip_skyline) {
+            error "Import of Skyline document in Panorama requested, but \'skip_skyline\' is set to true."
+        }
     }
 
     // save details about this run
@@ -277,6 +286,11 @@ workflow {
             skyr_file_ch,
             skyline_reports_ch
         )
+    }
+
+    // import Skyline document if requested
+    if(params.panorama.import_skyline) {
+
     }
 
 }
