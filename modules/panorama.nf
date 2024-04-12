@@ -22,12 +22,12 @@ String getPanoramaProjectURLForWebDavDirectory(String webdavDirectory) {
     def pathSegments = uri.path.split('/')
     pathSegments = pathSegments.findAll { it && it != '_webdav' }
     
-    // Ensure there are enough segments to process
-    if (pathSegments.size() < 3) {
-        throw new IllegalArgumentException("URL must contain at least three segments after the host")
+    int cutIndex = pathSegments.indexOf('%40files')
+    if (cutIndex != -1) {
+        pathSegments = pathSegments.take(cutIndex)
     }
-    
-    def basePath = pathSegments.take(3).join('/')    
+
+    def basePath = pathSegments.join('/')
     def newUrl = "${uri.scheme}://${uri.host}/${basePath}/project-begin.view"
     
     return newUrl
