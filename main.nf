@@ -19,7 +19,6 @@ include { SAVE_RUN_DETAILS } from "./modules/save_run_details"
 include { ENCYCLOPEDIA_BLIB_TO_DLIB } from "./modules/encyclopedia"
 include { ENCYCLOPEDIA_DLIB_TO_TSV } from "./modules/encyclopedia"
 include { BLIB_BUILD_LIBRARY } from "./modules/diann"
-include { IMPORT_SKYLINE } from "./modules/panorama"
 
 //
 // The main workflow
@@ -67,10 +66,8 @@ workflow {
         // if requested, upload mzMLs to panorama
         if(params.panorama.upload) {
 
-            upload_webdav_url = params.panorama.upload_url + "/" + get_upload_directory()
-
             panorama_upload_mzmls(
-                upload_webdav_url,
+                params.panorama.upload_url,
                 all_mzml_ch,
                 run_details_file,
                 config_file
@@ -278,10 +275,8 @@ workflow {
     // upload results to Panorama
     if(params.panorama.upload) {
 
-        upload_webdav_url = params.panorama.upload_url + "/" + get_upload_directory()
-
         panorama_upload_results(
-            upload_webdav_url,
+            params.panorama.upload_url,
             all_elib_ch,
             all_diann_file_ch,
             final_skyline_file,
@@ -292,15 +287,6 @@ workflow {
             config_file,
             skyr_file_ch,
             skyline_reports_ch
-        )
-    }
-
-    // import Skyline document if requested
-    if(params.panorama.import_skyline) {
-        IMPORT_SKYLINE(
-            panorama_upload_results.out.uploads_finished,
-            params.skyline_document_name,
-            getSkylineDocumentURL(upload_webdav_url)
         )
     }
 
@@ -336,24 +322,6 @@ def email() {
             body: msg
         )
     }
-}
-
-String getSkylineDocumentURL(String uploadWebdavURL) {
-    if (!uploadWebdavURL.endsWith("/")) {
-        uploadWebdavURL += "/";
-    }
-    
-    return uploadWebdavURL + "results/skyline";
-}
-
-def get_upload_directory() {
-    directory = "nextflow/${getCurrentTimestamp()}/${workflow.sessionId}"
-}
-
-def getCurrentTimestamp() {
-    LocalDateTime now = LocalDateTime.now()
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH-mm-ss")
-    return now.format(formatter)
 }
 
 //
