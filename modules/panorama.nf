@@ -27,8 +27,9 @@ String getPanoramaProjectURLForWebDavDirectory(String webdavDirectory) {
         pathSegments = pathSegments.take(cutIndex)
     }
 
-    def basePath = pathSegments.join('/')
-    def newUrl = "${uri.scheme}://${uri.host}/${basePath}/project-begin.view"
+    def basePath = pathSegments.collect { URLEncoder.encode(it, "UTF-8") }.join('/')
+    def encodedProjectView = URLEncoder.encode('project-begin.view', 'UTF-8')
+    def newUrl = "${uri.scheme}://${uri.host}/${basePath}/${encodedProjectView}"
     
     return newUrl
 }
