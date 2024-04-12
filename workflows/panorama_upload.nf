@@ -9,7 +9,7 @@ include { UPLOAD_FILE } from "../modules/panorama"
 workflow panorama_upload_results {
 
     take:
-        webdav_url
+        upload_webdav_url
         all_elib_files
         all_diann_file_ch
         final_skyline_file
@@ -23,10 +23,9 @@ workflow panorama_upload_results {
     
     emit:
         uploads_finished
+        upload_webdav_url
     
     main:
-
-        upload_webdav_url = webdav_url + "/" + get_upload_directory()
 
         mzml_file_ch.map { path -> tuple(path, upload_webdav_url + "/results/msconvert") }
             .concat(nextflow_run_details.map { path -> tuple(path, upload_webdav_url) })
@@ -61,23 +60,10 @@ workflow panorama_upload_mzmls {
     
     main:
 
-        upload_webdav_url = webdav_url + "/" + get_upload_directory()
-
         mzml_file_ch.map { path -> tuple(path, upload_webdav_url + "/results/msconvert") }
             .concat(nextflow_run_details.map { path -> tuple(path, upload_webdav_url) })
             .concat(Channel.fromPath(nextflow_config_file).map { path -> tuple(path, upload_webdav_url) })
             .set { all_file_upload_ch }
 
         UPLOAD_FILE(all_file_upload_ch)
-}
-
-
-def get_upload_directory() {
-    directory = "nextflow/${getCurrentTimestamp()}/${workflow.sessionId}"
-}
-
-def getCurrentTimestamp() {
-    LocalDateTime now = LocalDateTime.now()
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH-mm-ss")
-    return now.format(formatter)
 }
