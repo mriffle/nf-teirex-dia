@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter
 
 // modules
 include { UPLOAD_FILE } from "../modules/panorama"
-include { IMPORT_SKYLINE } from "./modules/panorama"
+include { IMPORT_SKYLINE } from "../modules/panorama"
 
 workflow panorama_upload_results {
 
