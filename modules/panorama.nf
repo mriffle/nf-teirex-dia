@@ -284,7 +284,6 @@ process IMPORT_SKYLINE {
         path("panorama-import-skyline.stderr"), emit: stderr
 
     script:
-        file_name = file(file_to_upload).name
         """
         echo "Importing ${skyline_filename} into Panorama..."
             ${exec_java_command(task.memory)} \
