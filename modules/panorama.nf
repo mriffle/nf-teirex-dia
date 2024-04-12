@@ -22,7 +22,7 @@ String getPanoramaProjectURLForWebDavDirectory(String webdavDirectory) {
     def pathSegments = uri.path.split('/')
     pathSegments = pathSegments.findAll { it && it != '_webdav' }
     
-    int cutIndex = pathSegments.indexOf('%40files')
+    int cutIndex = pathSegments.indexOf('@files')
     if (cutIndex != -1) {
         pathSegments = pathSegments.take(cutIndex)
     }
