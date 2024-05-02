@@ -19,7 +19,7 @@ process MSCONVERT {
     simasspectra = do_simasspectra ? '--simAsSpectra' : ''
 
     """
-    mywine msconvert \
+    wine msconvert \
         ${raw_file} \
         -v \
         --zlib \
